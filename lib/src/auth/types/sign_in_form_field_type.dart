@@ -1,0 +1,4 @@
+enum SignInFormFieldType {
+  username,
+  password,
+}
