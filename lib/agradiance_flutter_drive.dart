@@ -1,3 +1,5 @@
+library;
+
 export 'agradiance_flutter_drive.dart';
 export 'gen/assets.gen.dart';
 export 'src/auth/models/auth_state.dart';
