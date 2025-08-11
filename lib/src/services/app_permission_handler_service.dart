@@ -8,6 +8,7 @@ class AppPermissionHandlerService {
   static final AppPermissionHandlerService _instance = AppPermissionHandlerService._privateConstructor();
 
   factory AppPermissionHandlerService() => _instance;
+  static AppPermissionHandlerService get instance => AppPermissionHandlerService();
 
   /// Request a specific permission
   Future<bool> requestPermission(Permission permission) async {

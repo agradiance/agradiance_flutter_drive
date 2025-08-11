@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:agradiance_flutter_drive/src/services/app_secure_storage.dart';
 import 'package:collection/collection.dart' show DeepCollectionEquality;
-import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 enum AuthStateStatus { none, signingIn, signingOut, signingUp, updatingProfile, passwordChanging, passwordResetting }
@@ -39,51 +38,51 @@ enum AuthMode {
   bool get isMultiple => this == multiple;
 }
 
-class AuthState extends Equatable {
-  const AuthState({
-    required this.authMode,
-    this.multiUserAccount = const MultiUserAccount.setNull(),
-    this.stateStatus = AuthStateStatus.none,
-  });
+// class AuthState extends Equatable {
+//   const AuthState({
+//     required this.authMode,
+//     this.multiUserAccount = const MultiUserAccount.setNull(),
+//     this.stateStatus = AuthStateStatus.none,
+//   });
 
-  int get totalAccount => userModels?.length ?? 0;
+//   int get totalAccount => userModels?.length ?? 0;
 
-  final AuthMode authMode;
-  final MultiUserAccount multiUserAccount;
-  final AuthStateStatus stateStatus;
+//   final AuthMode authMode;
+//   final MultiUserAccount multiUserAccount;
+//   final AuthStateStatus stateStatus;
 
-  String? get activeUserID {
-    return multiUserAccount.activeSignedInUserID;
-  }
+//   String? get activeUserID {
+//     return multiUserAccount.activeSignedInUserID;
+//   }
 
-  AuthUser? get activeUser {
-    return activeUserID != null ? (userModels?[activeUserID]) : null;
-  }
+//   AuthUser? get activeUser {
+//     return activeUserID != null ? (userModels?[activeUserID]) : null;
+//   }
 
-  AuthUser? get user => activeUser;
+//   AuthUser? get user => activeUser;
 
-  Map<String, AuthUser>? get userModels {
-    return multiUserAccount.userModels;
-  }
+//   Map<String, AuthUser>? get userModels {
+//     return multiUserAccount.userModels;
+//   }
 
-  // bool? get signedIn {
-  //   if (activeUserID != null) {
-  //     return multiUserAccount.currentSignedInModel != null;
-  //   }
-  //   return false;
-  // }
+//   // bool? get signedIn {
+//   //   if (activeUserID != null) {
+//   //     return multiUserAccount.currentSignedInModel != null;
+//   //   }
+//   //   return false;
+//   // }
 
-  @override
-  List<Object?> get props => [stateStatus, multiUserAccount];
+//   @override
+//   List<Object?> get props => [stateStatus, multiUserAccount];
 
-  AuthState copyWith({MultiUserAccount? multiUserAccount, AuthStateStatus? stateStatus}) {
-    return AuthState(
-      authMode: authMode,
-      multiUserAccount: multiUserAccount ?? this.multiUserAccount,
-      stateStatus: stateStatus ?? this.stateStatus,
-    );
-  }
-}
+//   AuthState copyWith({MultiUserAccount? multiUserAccount, AuthStateStatus? stateStatus}) {
+//     return AuthState(
+//       authMode: authMode,
+//       multiUserAccount: multiUserAccount ?? this.multiUserAccount,
+//       stateStatus: stateStatus ?? this.stateStatus,
+//     );
+//   }
+// }
 
 class MultiUserAccount {
   static final secureStorage = AppSecureStorage.instance;

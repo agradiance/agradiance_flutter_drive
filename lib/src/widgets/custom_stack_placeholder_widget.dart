@@ -8,6 +8,7 @@ class CustomStackPlaceholderWidget extends StatelessWidget {
     this.topWidget,
     this.hideTop = false,
     this.hideChild = false,
+    this.enableChild = true,
     this.childOpacity = 1,
   });
 
@@ -15,6 +16,7 @@ class CustomStackPlaceholderWidget extends StatelessWidget {
   final Widget? child;
   final bool hideTop;
   final bool hideChild;
+  final bool enableChild;
   final double childOpacity;
 
   @override
@@ -22,9 +24,12 @@ class CustomStackPlaceholderWidget extends StatelessWidget {
     return Stack(
       children: [
         if (topWidget.isNotNull)
-          Visibility(
-            visible: !hideChild,
-            child: Opacity(opacity: childOpacity, child: child),
+          IgnorePointer(
+            ignoring: !enableChild,
+            child: Visibility(
+              visible: !hideChild,
+              child: Opacity(opacity: childOpacity, child: child),
+            ),
           ),
         if (topWidget.isNotNull) Visibility(visible: !hideTop, child: topWidget!),
       ],

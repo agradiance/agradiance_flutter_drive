@@ -1,4 +1,1 @@
-enum SignInFormFieldType {
-  username,
-  password,
-}
+
