@@ -7,25 +7,12 @@ enum AuthStateStatus { none, signingIn, signingOut, signingUp, updatingProfile, 
 
 abstract class AuthUser {
   final String id;
-  static late AuthUser Function(String json) _fromJsonFile;
-  static late AuthUser Function(Map<String, dynamic> map) _fromMap;
 
   AuthUser({
     required this.id,
     required AuthUser Function(String json) fromJsonFile,
     required AuthUser Function(Map<String, dynamic> map) fromMap,
-  }) {
-    _fromJsonFile = fromJsonFile;
-    _fromMap = fromMap;
-  }
-
-  factory AuthUser.fromJson(String json) {
-    return _fromJsonFile(json);
-  }
-
-  factory AuthUser.fromMap(Map<String, dynamic> map) {
-    return _fromMap(map);
-  }
+  });
 
   String toJson();
 }
@@ -38,66 +25,36 @@ enum AuthMode {
   bool get isMultiple => this == multiple;
 }
 
-// class AuthState extends Equatable {
-//   const AuthState({
-//     required this.authMode,
-//     this.multiUserAccount = const MultiUserAccount.setNull(),
-//     this.stateStatus = AuthStateStatus.none,
-//   });
-
-//   int get totalAccount => userModels?.length ?? 0;
-
-//   final AuthMode authMode;
-//   final MultiUserAccount multiUserAccount;
-//   final AuthStateStatus stateStatus;
-
-//   String? get activeUserID {
-//     return multiUserAccount.activeSignedInUserID;
-//   }
-
-//   AuthUser? get activeUser {
-//     return activeUserID != null ? (userModels?[activeUserID]) : null;
-//   }
-
-//   AuthUser? get user => activeUser;
-
-//   Map<String, AuthUser>? get userModels {
-//     return multiUserAccount.userModels;
-//   }
-
-//   // bool? get signedIn {
-//   //   if (activeUserID != null) {
-//   //     return multiUserAccount.currentSignedInModel != null;
-//   //   }
-//   //   return false;
-//   // }
-
-//   @override
-//   List<Object?> get props => [stateStatus, multiUserAccount];
-
-//   AuthState copyWith({MultiUserAccount? multiUserAccount, AuthStateStatus? stateStatus}) {
-//     return AuthState(
-//       authMode: authMode,
-//       multiUserAccount: multiUserAccount ?? this.multiUserAccount,
-//       stateStatus: stateStatus ?? this.stateStatus,
-//     );
-//   }
-// }
-
 class MultiUserAccount {
   static final secureStorage = AppSecureStorage.instance;
   static final String multiUserRefKey = "MULTI_USER_STORAGE_REF_KEY";
   static final String multiUserActiveUserIDRefKey = "MULTI_USER_ACTIVE_USER_ID_STORAGE_REF_KEY";
 
-  const MultiUserAccount({this.userModels, this.activeSignedInUserID});
+  MultiUserAccount({
+    this.userModels,
+    this.activeSignedInUserID,
+    required AuthUser Function(String json)? fromJsonFile,
+    required AuthUser Function(Map<String, dynamic> map)? fromMap,
+  }) {
+    _fromJsonFile = fromJsonFile;
+    _fromMap = fromMap;
+  }
 
-  const MultiUserAccount.setNull() : this();
+  MultiUserAccount.setNull() : this(fromJsonFile: null, fromMap: null);
+
+  static AuthUser Function(String json)? _fromJsonFile;
+  static AuthUser Function(Map<String, dynamic> map)? _fromMap;
 
   static Future<MultiUserAccount> loadFromStorage() async {
     final models = await getStorageUserModel();
     final id = await getStorageUserActiveID();
 
-    return MultiUserAccount(userModels: models, activeSignedInUserID: id);
+    return MultiUserAccount(
+      userModels: models,
+      activeSignedInUserID: id,
+      fromJsonFile: _fromJsonFile,
+      fromMap: _fromMap,
+    );
   }
 
   final Map<String, AuthUser>? userModels;
@@ -122,8 +79,8 @@ class MultiUserAccount {
 
     if (result != null) {
       final models = result.entries.map((e) {
-        return AuthUser.fromJson(e.value);
-      });
+        return _fromJsonFile?.call(e.value);
+      }).nonNulls;
       // .sortedBy<DateTime>((a) {
       //   return a.addedAt ?? DateTime.now();
       // });
@@ -188,6 +145,8 @@ class MultiUserAccount {
     return MultiUserAccount(
       userModels: userModels ?? this.userModels,
       activeSignedInUserID: activeSignedInUserID ?? this.activeSignedInUserID,
+      fromJsonFile: _fromJsonFile,
+      fromMap: _fromMap,
     );
   }
 
