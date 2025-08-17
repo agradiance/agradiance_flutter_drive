@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:agradiance_flutter_drive/src/logs/debub_print.dart';
 import 'package:agradiance_flutter_drive/src/notifications/app_toastification.dart';
 import 'package:agradiance_flutter_drive/src/services/device_service.dart';
 import 'package:agradiance_flutter_drive/src/services/local_notification_service.dart';
@@ -45,8 +44,8 @@ class FCMService {
   }
 
   Future<void> remoteMessageHandler({required RemoteMessage message}) async {
-    dprint('Got a message whilst in the foreground!');
-    dprint('Message data: ${message.data}');
+    //dprint('Got a message whilst in the foreground!');
+    //dprint('Message data: ${message.data}');
 
     final notification = message.notification;
 
@@ -77,11 +76,11 @@ class FCMService {
   }
 
   Future<void> onDoneMessagingForeground() async {
-    dprint('Done!!!');
+    //dprint('Done!!!');
   }
 
   void onErrorMessagingForeground(Object value) {
-    dprint('Error!');
+    //dprint('Error!');
   }
 
   Future<AuthorizationStatusType> requestPermission() async {
@@ -112,7 +111,7 @@ class FCMService {
   }
 
   Future<FCMDeviceModel?> getFCMDeviceModel({required String userId}) async {
-    dprint(await _deviceService.deviceModel);
+    //dprint(await _deviceService.deviceModel);
     final deviceId = await _deviceService.deviceId;
     final deviceModel = await _deviceService.deviceModel;
     final platform = _deviceService.platform;
@@ -192,7 +191,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     );
   }
 
-  dprint("Handling a background message: ${message.messageId}");
+  //dprint("Handling a background message: ${message.messageId}");
 }
 
 class FCMDeviceModel extends Equatable {

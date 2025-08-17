@@ -1,17 +1,15 @@
-import 'package:agradiance_flutter_drive/src/logs/debub_print.dart';
 import 'package:agradiance_flutter_drive/src/services/ads_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 mixin AdsWidgetMixin<T extends StatefulWidget> on State<T> {
   InterstitialAd? _interstitialAd;
-  InterstitialAd? get interstitialAd => this._interstitialAd;
-  set interstitialAd(InterstitialAd? value) => this._interstitialAd = value;
+  InterstitialAd? get interstitialAd => _interstitialAd;
+  set interstitialAd(InterstitialAd? value) => _interstitialAd = value;
 
   final ValueNotifier<bool> _isInterstitialAdLoaded = ValueNotifier(false);
   bool get isInterstitialAdLoaded => _isInterstitialAdLoaded.value;
-  set isInterstitialAdLoaded(bool value) =>
-      _isInterstitialAdLoaded.value = value;
+  set isInterstitialAdLoaded(bool value) => _isInterstitialAdLoaded.value = value;
 
   BannerAd? _bannerAd;
   BannerAd? get bannerAd => _bannerAd;
@@ -50,14 +48,14 @@ mixin AdsWidgetMixin<T extends StatefulWidget> on State<T> {
     bannerAd = await adsService.bannerAd(
       onAdLoaded: (ad) {
         //
-        dprint('$ad loaded.');
+        //dprint('$ad loaded.');
         setState(() {
           isBannerLoaded = true;
         });
       },
       onAdFailedToLoad: (ad, error) {
         //
-        dprint('BannerAd failed to load: $error');
+        //dprint('BannerAd failed to load: $error');
         setState(() {
           isBannerLoaded = false;
         });
@@ -107,13 +105,13 @@ mixin AdsWidgetMixin<T extends StatefulWidget> on State<T> {
             onAdClicked: (ad) {},
           );
 
-          dprint('$ad loaded.');
+          //dprint('$ad loaded.');
           // Keep a reference to the ad so you can show it later.
           _interstitialAd = ad;
         },
         // Called when an ad request failed.
         onAdFailedToLoad: (LoadAdError error) {
-          dprint('InterstitialAd failed to load: $error');
+          //dprint('InterstitialAd failed to load: $error');
           _interstitialAd?.dispose();
           setState(() {
             _interstitialAd = null;

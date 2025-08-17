@@ -6,7 +6,6 @@ import 'dart:convert';
 
 import 'package:agradiance_flutter_drive/src/encrypt/encrypt_utils.dart';
 import 'package:agradiance_flutter_drive/src/errors/exceptions.dart';
-import 'package:agradiance_flutter_drive/src/logs/debub_print.dart';
 import 'package:dio/dio.dart';
 // import 'package:get_it/get_it.dart';
 import 'package:http_status/http_status.dart';
@@ -152,7 +151,7 @@ class RestApiService {
     } else if (exception is TimeoutException) {
       throw APIException(message: exception.message ?? 'Connection Timeout please retry', statusCode: 100);
     } else {
-      dprint(exception.toString(), stackTrace: StackTrace.current);
+      //dprint(exception.toString(), stackTrace: StackTrace.current);
       throw APIException(message: exception.toString(), statusCode: -1);
     }
   }
@@ -185,7 +184,7 @@ class RestApiService {
       if (response.statusCode?.isSuccessfulHttpStatusCode ?? false) {
         return _ApiResponse(responseData: body, statusCode: response.statusCode, response: response);
       } else {
-        dprint(response.statusMessage, stackTrace: StackTrace.current);
+        //dprint(response.statusMessage, stackTrace: StackTrace.current);
         throw APIException(
           message: message ?? response.statusMessage ?? "Error occured",
           statusCode: response.statusCode,

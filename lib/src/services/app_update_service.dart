@@ -30,17 +30,21 @@ class AppUpdateService {
     await (newVersionPlus ?? await AppUpdateService.instance.checkSS()).launchAppStore(appStoreLink);
   }
 
-  Future<VersionStatus?> _getVersionStatus([NewVersionPlus? newVersion]) async {
+  Future<VersionStatus?> getVersionStatus([NewVersionPlus? newVersion]) async {
     return (newVersion ?? await checkSS()).getVersionStatus();
   }
 
-  Future<void> showUpdateDialog({required BuildContext context, bool showWhenUptodate = false}) async {
-    final newVersion = await checkSS();
+  Future<void> showUpdateDialog({required BuildContext context, required bool showWhenUptodate}) async {
+    bool? canUpdate;
+    VersionStatus? versionStatus;
+    if (!showWhenUptodate) {
+      final newVersion = await checkSS();
 
-    final versionStatus = await _getVersionStatus(newVersion);
-    final canUpdate = versionStatus?.canUpdate ?? false;
+      versionStatus = await getVersionStatus(newVersion);
+      canUpdate = versionStatus?.canUpdate;
+    }
 
-    if (canUpdate || showWhenUptodate) {
+    if (showWhenUptodate || (canUpdate ?? false)) {
       await showModalBottomSheet(
         isScrollControlled: true,
         shape: RoundedRectangleBorder(),

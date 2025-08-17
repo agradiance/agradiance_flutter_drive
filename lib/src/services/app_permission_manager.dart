@@ -1,11 +1,9 @@
-import 'package:agradiance_flutter_drive/src/logs/debub_print.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class AppPermissionManager {
   // Singleton setup
   AppPermissionManager._internal();
-  static final AppPermissionManager _instance =
-      AppPermissionManager._internal();
+  static final AppPermissionManager _instance = AppPermissionManager._internal();
   factory AppPermissionManager() => _instance;
   static AppPermissionManager get instance => AppPermissionManager();
 
@@ -61,18 +59,18 @@ class AppPermissionManager {
     final status = await Permission.storage.status;
 
     if (status.isGranted) {
-      dprint('Storage permission already granted');
+      //dprint('Storage permission already granted');
       return;
     }
 
     final result = await Permission.storage.request();
 
     if (result.isGranted) {
-      dprint('Storage permission granted');
+      //dprint('Storage permission granted');
     } else if (result.isDenied) {
-      dprint('Storage permission denied');
+      //dprint('Storage permission denied');
     } else if (result.isPermanentlyDenied) {
-      dprint('Storage permission permanently denied');
+      //dprint('Storage permission permanently denied');
       await openAppSettings(); // Optional: prompt user to open app settings
     }
   }

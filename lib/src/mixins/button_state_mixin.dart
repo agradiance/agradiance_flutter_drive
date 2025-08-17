@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:agradiance_flutter_drive/src/logs/debub_print.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
@@ -54,8 +53,8 @@ mixin ButtonStateMixin<T extends StatefulWidget> on State<T> {
           (_buttonItemsNotifier.value[id] ??= ButtonItem(id: id, state: ButtonState.active)).updateState(state);
         });
       }
-    } on Exception catch (e) {
-      dprint(e);
+    } on Exception {
+      //dprint(e);
     }
 
     // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {

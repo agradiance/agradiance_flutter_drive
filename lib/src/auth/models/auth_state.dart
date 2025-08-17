@@ -26,7 +26,7 @@ enum AuthMode {
 }
 
 class MultiUserAccount {
-  static final secureStorage = AppSecureStorage.instance;
+  static AppSecureStorage get secureStorage => AppSecureStorage.instance;
   static final String multiUserRefKey = "MULTI_USER_STORAGE_REF_KEY";
   static final String multiUserActiveUserIDRefKey = "MULTI_USER_ACTIVE_USER_ID_STORAGE_REF_KEY";
 
@@ -44,6 +44,15 @@ class MultiUserAccount {
 
   static AuthUser Function(String json)? _fromJsonFile;
   static AuthUser Function(Map<String, dynamic> map)? _fromMap;
+
+  ///
+  static void updateSerializerFunctions({
+    required AuthUser Function(String json)? fromJsonFile,
+    required AuthUser Function(Map<String, dynamic> map)? fromMap,
+  }) {
+    _fromJsonFile = fromJsonFile;
+    _fromMap = fromMap;
+  }
 
   static Future<MultiUserAccount> loadFromStorage() async {
     final models = await getStorageUserModel();
@@ -79,7 +88,9 @@ class MultiUserAccount {
 
     if (result != null) {
       final models = result.entries.map((e) {
-        return _fromJsonFile?.call(e.value);
+        final re = _fromJsonFile?.call(e.value);
+        //dprint([re, _fromJsonFile], name: "[re, _fromJsonFile]");
+        return re;
       }).nonNulls;
       // .sortedBy<DateTime>((a) {
       //   return a.addedAt ?? DateTime.now();
@@ -91,6 +102,8 @@ class MultiUserAccount {
         (resultModels ??= {})[userID] = model;
       }
     }
+
+    //dprint(resultModels, name: "resultModels");
 
     return resultModels;
   }

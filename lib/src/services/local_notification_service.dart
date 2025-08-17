@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io'; // Required for Platform check
 
-import 'package:agradiance_flutter_drive/src/logs/debub_print.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -10,26 +9,23 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 void notificationTapBackground(NotificationResponse notificationResponse) {
   // Handle notification tap events while the app is in the background.
   // Keep this logic minimal. Maybe store the payload for processing when app opens.
-  dprint(
-    'Notification(background) tapped: payload = ${notificationResponse.payload}',
-  );
+  //dprint(
+  //   'Notification(background) tapped: payload = ${notificationResponse.payload}',
+  // );
   // IMPORTANT: Don't perform long-running tasks or UI navigation here.
 }
 
 class LocalNotificationService {
   // Singleton pattern setup
   LocalNotificationService._internal();
-  static final LocalNotificationService _instance =
-      LocalNotificationService._internal();
+  static final LocalNotificationService _instance = LocalNotificationService._internal();
   static LocalNotificationService get instance => _instance;
 
-  final FlutterLocalNotificationsPlugin _notificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
 
   // Use a StreamController for payload handling (optional but recommended)
   // Using broadcast allows multiple listeners. Use BehaviorSubject from rxdart for last emitted value.
-  final StreamController<String?> _payloadStreamController =
-      StreamController<String?>.broadcast();
+  final StreamController<String?> _payloadStreamController = StreamController<String?>.broadcast();
   Stream<String?> get payloadStream => _payloadStreamController.stream;
 
   Future<void> init() async {
@@ -38,35 +34,30 @@ class LocalNotificationService {
 
     // --- Android Initialization Settings ---
     // Replace 'app_icon' with the actual name of your drawable icon file (without extension)
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
 
     // --- iOS/macOS Initialization Settings ---
-    final DarwinInitializationSettings initializationSettingsDarwin =
-        DarwinInitializationSettings(
-          requestAlertPermission: false, // Request permissions separately
-          requestBadgePermission: false,
-          requestSoundPermission: false,
-        );
+    final DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
+      requestAlertPermission: false, // Request permissions separately
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
 
     // --- Combined Initialization Settings ---
-    final InitializationSettings initializationSettings =
-        InitializationSettings(
-          android: initializationSettingsAndroid,
-          iOS: initializationSettingsDarwin,
-          macOS: initializationSettingsDarwin,
-        );
+    final InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsDarwin,
+      macOS: initializationSettingsDarwin,
+    );
 
     // --- Initialize Plugin ---
     await _notificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse:
-          _onDidReceiveNotificationResponse, // Foreground tap handler
-      onDidReceiveBackgroundNotificationResponse:
-          notificationTapBackground, // Background tap handler
+      onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse, // Foreground tap handler
+      onDidReceiveBackgroundNotificationResponse: notificationTapBackground, // Background tap handler
     );
 
-    dprint("Notification Service Initialized");
+    //dprint("Notification Service Initialized");
 
     // Optional: Request permissions right after initialization
     // await requestPermissions();
@@ -75,38 +66,29 @@ class LocalNotificationService {
   // --- Permission Handling ---
   Future<void> requestPermissions() async {
     bool? permissionsGranted;
+    (permissionsGranted);
     if (Platform.isIOS || Platform.isMacOS) {
       permissionsGranted = await _notificationsPlugin
-          .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin
-          >()
+          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(alert: true, badge: true, sound: true);
       await _notificationsPlugin
-          .resolvePlatformSpecificImplementation<
-            MacOSFlutterLocalNotificationsPlugin
-          >()
+          .resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(alert: true, badge: true, sound: true);
     } else if (Platform.isAndroid) {
-      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-          _notificationsPlugin
-              .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin
-              >();
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation = _notificationsPlugin
+          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
       // Request permission (needed for Android 13+)
-      permissionsGranted = await androidImplementation
-          ?.requestNotificationsPermission();
+      permissionsGranted = await androidImplementation?.requestNotificationsPermission();
     }
-    dprint("Notification Permissions Requested. Granted: $permissionsGranted");
+    //dprint("Notification Permissions Requested. Granted: $permissionsGranted");
   }
 
   // --- Callback Handlers (called by the plugin) ---
 
   // Callback for when a notification is tapped (foreground)
-  void _onDidReceiveNotificationResponse(
-    NotificationResponse notificationResponse,
-  ) async {
+  void _onDidReceiveNotificationResponse(NotificationResponse notificationResponse) async {
     final String? payload = notificationResponse.payload;
-    dprint('Notification(foreground) tapped: payload = $payload');
+    //dprint('Notification(foreground) tapped: payload = $payload');
     if (payload != null && payload.isNotEmpty) {
       _payloadStreamController.add(payload); // Add payload to stream
     }
@@ -123,12 +105,10 @@ class LocalNotificationService {
   }) async {
     // --- Define Android Notification Details ---
     // Ensure you have a channel ID, name, and description.
-    const AndroidNotificationDetails
-    androidDetails = AndroidNotificationDetails(
+    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       'high_importance_channel', // Channel ID
       'High Importance Notifications', // Channel Name
-      channelDescription:
-          'This channel is used for important notifications.', // Channel Description
+      channelDescription: 'This channel is used for important notifications.', // Channel Description
       importance: Importance.max, // High importance for heads-up notification
       priority: Priority.high,
       ticker: 'ticker', // Ticker text shown in status bar
@@ -155,16 +135,10 @@ class LocalNotificationService {
 
     // --- Show Notification ---
     try {
-      dprint("Showing notification id: $id");
-      await _notificationsPlugin.show(
-        id,
-        title,
-        body,
-        notificationDetails,
-        payload: payload,
-      );
+      //dprint("Showing notification id: $id");
+      await _notificationsPlugin.show(id, title, body, notificationDetails, payload: payload);
     } catch (e) {
-      dprint("Error showing notification: $e");
+      //dprint("Error showing notification: $e");
     }
   }
 
@@ -184,7 +158,7 @@ class LocalNotificationService {
   }
 
   void handleNotificationRouting({String? payload}) {
-    dprint(payload);
+    //dprint(payload);
     if (payload != null) {
       // final map = (jsonDecode(payload) as Map<String, dynamic>);
       // final routeName = map["routeName"] ?? AppPages.home.name;
@@ -205,10 +179,7 @@ enum LocalNotificationPayloadCodes {
 
   const LocalNotificationPayloadCodes._internal({required this.code});
   factory LocalNotificationPayloadCodes({required String code}) {
-    return LocalNotificationPayloadCodes.values.firstWhereOrNull(
-          (element) => element.code == code,
-        ) ??
-        info;
+    return LocalNotificationPayloadCodes.values.firstWhereOrNull((element) => element.code == code) ?? info;
   }
   final String code;
 }
