@@ -1,7 +1,7 @@
 library;
 
 export 'agradiance_flutter_drive.dart';
-export 'gen/assets.gen.dart';
+// export 'gen/assets.gen.dart';
 export 'src/auth/models/auth_state.dart';
 export 'src/auth/models/token_model.dart';
 export 'src/auth/state/auth_bloc.dart';
