@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+//
 class CGImage<T> extends StatelessWidget {
   ///[imageSource] is required parameter for showing png,jpg,etc image
   final T? imageSource;
