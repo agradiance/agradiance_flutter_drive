@@ -156,7 +156,7 @@ class RestApiService {
     }
   }
 
-  setVerifyUserAuthTokensExpiration(Future<void> Function()? veryfyUserAuthTokensExpirationCallBack) {
+  void setVerifyUserAuthTokensExpiration(Future<void> Function()? veryfyUserAuthTokensExpirationCallBack) {
     this.veryfyUserAuthTokensExpirationCallBack = veryfyUserAuthTokensExpirationCallBack;
   }
 
