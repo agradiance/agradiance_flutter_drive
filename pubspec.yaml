@@ -15,7 +15,7 @@ dependencies:
   flutter_form_builder: ^10.1.0
   lite_validator: ^0.0.4
   responsive_framework: ^1.5.1
-  flutter_tts: ^4.2.3
+  # flutter_tts: ^4.2.3
   share_plus: ^11.0.0
   dio: ^5.8.0+1
   http_status: ^3.3.3

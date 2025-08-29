@@ -20,60 +20,6 @@ class _ApiResponse<T> {
   _ApiResponse({required this.responseData, required this.statusCode, required this.response});
 }
 
-abstract class AuthInterceptor extends Interceptor {
-  Dio get client {
-    return Dio(BaseOptions(receiveDataWhenStatusError: true));
-  }
-
-  AuthInterceptor();
-
-  // @override
-  // void onError(DioException err, ErrorInterceptorHandler handler) async {
-  //   if (err.response?.statusCode == 401) {
-  //     final authRepository = GetIt.I.get<AuthRepository>();
-  //     final authBloc = GetIt.I.get<AuthBloc>();
-  //     // Token expired
-
-  //     final userID = authBloc.model.multiUserAccount.activeSignedInUserID;
-
-  //     if (userID != null) {
-  //       final tokenModel = await TokenUtils.getTokenModel(userID: userID);
-
-  //       if (tokenModel != null && tokenModel.hasAccessTokenExpired && (!tokenModel.hasRefreshTokenExpired)) {
-  //         final refreshToken = tokenModel.refreshToken;
-  //         final encryptedString = EncryptUtils.instance.encryptMapToBase64(input: {"refreshToken": refreshToken});
-  //         final result = await authRepository.refreshToken(data: {"data": encryptedString});
-
-  //         await result.fold((left) {}, (right) async {
-  //           final data = right["data"] is Map ? right["data"] : {};
-  //           final newAccessToken = data['accessToken']?.toString();
-  //           final newRefreshToken = data['refreshToken']?.toString();
-
-  //           if (newAccessToken != null && newRefreshToken != null) {
-  //             final tokenModel = TokenModel(
-  //               userID: userID,
-  //               accessToken: newAccessToken,
-  //               refreshToken: newRefreshToken,
-  //               updatedAt: DateTime.now(),
-  //             );
-  //             await TokenUtils.saveUserTokenModelToStorage(tokenModel: tokenModel);
-
-  //             err.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
-
-  //             // Retry the request
-  //             final response = await _client.fetch(err.requestOptions);
-  //             handler.resolve(response);
-  //             return;
-  //           }
-  //         });
-  //       }
-  //     }
-  //   }
-
-  //   handler.next(err);
-  // }
-}
-
 class RestApiService {
   RestApiService._(this._client);
   static final RestApiService _internal = RestApiService._(Dio(BaseOptions(receiveDataWhenStatusError: true)));
@@ -88,12 +34,39 @@ class RestApiService {
     _client.interceptors.add(interceptor);
   }
 
+  void addAllInterceptors({required List<Interceptor> interceptor}) {
+    _client.interceptors.addAll(interceptor);
+  }
+
   bool removeInterceptor({required Interceptor interceptor}) {
     return _client.interceptors.remove(interceptor);
   }
 
   void cancelRequest() {
     _client.close();
+  }
+
+  /// [config] should be called earlier to initialize and set up the service
+  Future<void> config({
+    String? baseUrl,
+    Duration? connectTimeout,
+    required List<Interceptor>? interceptors,
+    bool ping = false,
+    String? pingUrl,
+  }) async {
+    assert((ping == false || (ping == true && pingUrl != null)), "pingUrl must not be null when ping is true");
+
+    // set client
+    _client.options = _client.options.copyWith(baseUrl: baseUrl, connectTimeout: connectTimeout);
+
+    if (interceptors != null) {
+      addAllInterceptors(interceptor: interceptors);
+    }
+
+    if (ping && pingUrl != null) {
+      await pingApi(pingUrl);
+    }
+    //
   }
 
   Future<void> pingApi(String url) async {
