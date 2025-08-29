@@ -10,6 +10,7 @@ import 'package:dio/dio.dart';
 // import 'package:get_it/get_it.dart';
 import 'package:http_status/http_status.dart';
 
+//
 class _ApiResponse<T> {
   final T responseData;
   final int? statusCode;
