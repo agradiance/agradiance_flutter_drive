@@ -5,21 +5,21 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 
 class DeviceService {
-  static final DeviceService _instance = DeviceService._internal(
-    deviceInfoPlugin: DeviceInfoPlugin(),
-  );
+  DeviceService._internal({required DeviceInfoPlugin deviceInfoPlugin}) : _deviceInfoPlugin = deviceInfoPlugin;
+  static final DeviceService _instance = DeviceService._internal(deviceInfoPlugin: DeviceInfoPlugin());
+  //
+  static final DeviceService instance = DeviceService();
 
   factory DeviceService() {
     return _instance;
   }
 
-  DeviceService._internal({required DeviceInfoPlugin deviceInfoPlugin})
-    : _deviceInfoPlugin = deviceInfoPlugin;
-
   final DeviceInfoPlugin _deviceInfoPlugin;
 
   String? _deviceId;
   String? _deviceModel;
+
+  Future<AndroidDeviceInfo> get androidInfo => _deviceInfoPlugin.androidInfo;
 
   /// Call this method once during app startup (e.g., in main())
   Future<String?> get deviceId async {

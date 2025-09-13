@@ -35,7 +35,7 @@ export 'src/mixins/button_state_mixin.dart';
 export 'src/notifications/app_toastification.dart';
 export 'src/services/app_link_manager.dart';
 export 'src/services/app_navigator_service.dart';
-export 'src/services/app_permission_handler_service.dart';
+export 'src/services/app_permission_service.dart';
 export 'src/services/app_permission_manager.dart';
 export 'src/services/app_secure_storage.dart';
 export 'src/services/app_update_service.dart';

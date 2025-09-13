@@ -165,12 +165,13 @@ class _CustomAppUpdateModalSheetState extends State<CustomAppUpdateModalSheet> {
                                   Align(
                                     alignment: Alignment.centerLeft,
                                     child: ReadMoreText(
-                                      versionStatus?.releaseNotes ?? "",
+                                      (versionStatus?.releaseNotes ?? "").replaceAll("<br>", "\n"),
                                       trimMode: TrimMode.Line,
                                       trimLines: 3,
                                       colorClickableText: context.colorScheme.primary,
-                                      trimCollapsedText: 'Read more',
-                                      trimExpandedText: 'Show less',
+                                      trimCollapsedText: ' Read more',
+                                      trimExpandedText: ' Show less',
+                                      style: TextStyle(fontSize: 11),
                                       moreStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                                     ),
                                   ),

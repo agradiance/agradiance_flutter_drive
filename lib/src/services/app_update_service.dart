@@ -7,6 +7,8 @@ import 'package:new_version_plus/new_version_plus.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
+enum DisplayMode { dialog, bottomSheet }
+
 class AppUpdateService {
   AppUpdateService._internal();
 
@@ -34,7 +36,11 @@ class AppUpdateService {
     return (newVersion ?? await checkSS()).getVersionStatus();
   }
 
-  Future<void> showUpdateDialog({required BuildContext context, required bool showWhenUptodate}) async {
+  Future<void> showUpdateDialog({
+    required BuildContext context,
+    required bool showWhenUptodate,
+    DisplayMode displayMode = DisplayMode.dialog,
+  }) async {
     bool? canUpdate;
     VersionStatus? versionStatus;
     if (!showWhenUptodate) {
@@ -45,16 +51,30 @@ class AppUpdateService {
     }
 
     if (showWhenUptodate || (canUpdate ?? false)) {
-      await showModalBottomSheet(
-        isScrollControlled: true,
-        shape: RoundedRectangleBorder(),
-        // ignore: use_build_context_synchronously
-        context: context,
-        builder: (context) {
-          //
-          return PopScope(canPop: false, child: CustomAppUpdateModalSheet(versionStatus: versionStatus));
-        },
-      );
+      if (displayMode == DisplayMode.bottomSheet) {
+        await showModalBottomSheet(
+          isScrollControlled: true,
+          shape: RoundedRectangleBorder(),
+          // ignore: use_build_context_synchronously
+          context: context,
+          builder: (context) {
+            //
+            return PopScope(canPop: false, child: CustomAppUpdateModalSheet(versionStatus: versionStatus));
+          },
+        );
+      } else {
+        await showDialog(
+          // ignore: use_build_context_synchronously
+          context: context,
+          builder: (context) {
+            //
+            return PopScope(
+              canPop: false,
+              child: AlertDialog(content: CustomAppUpdateModalSheet(versionStatus: versionStatus)),
+            );
+          },
+        );
+      }
     }
   }
 }

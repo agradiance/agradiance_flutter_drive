@@ -1,6 +1,7 @@
-import 'package:agradiance_flutter_drive/src/services/app_permission_manager.dart';
+import 'package:agradiance_flutter_drive/agradiance_flutter_drive.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:collection/collection.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AppSecureStorage {
   static final AppSecureStorage _internal = AppSecureStorage._initialize(
@@ -38,9 +39,9 @@ class AppSecureStorage {
 
   Future<Map<String, String>> _allData() => _readAll();
   Future<String?> _read({required String key}) async {
-    if (await AppPermissionManager.instance.isStorageGranted) {
-      return _storage.read(key: key);
-    }
+    // if (await AppPermissionService.instance.isPermissionGranted(Permission.storage)) {
+    return _storage.read(key: key);
+    // }
 
     return null;
   }
@@ -110,16 +111,18 @@ class AppSecureStorage {
     required String keyRef,
     required String? value,
   }) async {
-    AppPermissionManager.instance.requestPermissionService();
-    if (await AppPermissionManager.instance.isStorageGranted) {
-      await _storage.write(
-        key: keyRef,
-        value: value,
-        aOptions: _aOptions(),
-        iOptions: _iOptions(),
-        lOptions: _lOptions(),
-      );
-    }
+    // final status = await AppPermissionService.instance
+    //     .requestMultipleAndSettiings([Permission.storage]);
+    // if (status[Permission.storage]?.isGranted ?? false) {
+    // if (await Permission.storage.isGranted ?? false) {
+    await _storage.write(
+      key: keyRef,
+      value: value,
+      aOptions: _aOptions(),
+      iOptions: _iOptions(),
+      lOptions: _lOptions(),
+    );
+    // }
 
     final getValue = await _read(key: keyRef);
     if (getValue == value) {
