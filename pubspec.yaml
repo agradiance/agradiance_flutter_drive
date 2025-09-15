@@ -42,7 +42,7 @@ dependencies:
   cached_network_image: ^3.4.1
   extended_image: ^10.0.1
   visibility_detector: ^0.4.0+2
-  elegant_theme: ^0.2.2
+  elegant_theme: ^0.2.4
   toastification: ^3.0.3
   # firebase_messaging: ^16.0.0
   flutter_bloc: ^9.1.1
