@@ -64,24 +64,31 @@ class RestApiService {
     required List<Interceptor>? interceptors,
     bool ping = false,
     String? pingUrl,
+    void Function(Exception exception)? onConfigError,
   }) async {
-    assert((ping == false || (ping == true && pingUrl != null)), "pingUrl must not be null when ping is true");
+    try {
+      assert((ping == false || (ping == true && pingUrl != null)), "pingUrl must not be null when ping is true");
 
-    _baseUrl = baseUrl;
-    _connectTimeout = connectTimeout;
-    _responseDataKey = responseDataKey;
-    _responseMessageKey = responseMessageKey;
+      _baseUrl = baseUrl;
+      _connectTimeout = connectTimeout;
+      _responseDataKey = responseDataKey;
+      _responseMessageKey = responseMessageKey;
 
-    // set client
-    _client.options = _client.options.copyWith(baseUrl: baseUrl, connectTimeout: connectTimeout);
+      // set client
+      _client.options = _client.options.copyWith(baseUrl: baseUrl, connectTimeout: connectTimeout);
 
-    if (interceptors != null) {
-      addAllInterceptors(interceptor: interceptors);
+      if (interceptors != null) {
+        addAllInterceptors(interceptor: interceptors);
+      }
+
+      if (ping && pingUrl != null) {
+        await pingApi(pingUrl);
+      }
+    } on Exception catch (exception) {
+      //
+      onConfigError?.call(exception);
     }
 
-    if (ping && pingUrl != null) {
-      await pingApi(pingUrl);
-    }
     //
   }
 
