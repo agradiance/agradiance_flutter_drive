@@ -3,7 +3,15 @@ import 'package:agradiance_flutter_drive/src/services/app_secure_storage.dart';
 import 'package:collection/collection.dart' show DeepCollectionEquality;
 import 'package:flutter/foundation.dart';
 
-enum AuthStateStatus { none, signingIn, signingOut, signingUp, updatingProfile, passwordChanging, passwordResetting }
+enum AuthStateStatus {
+  none,
+  signingIn,
+  signingOut,
+  signingUp,
+  updatingProfile,
+  passwordChanging,
+  passwordResetting,
+}
 
 abstract class AuthUser {
   final String id;
@@ -28,7 +36,8 @@ enum AuthMode {
 class MultiUserAccount {
   static AppSecureStorage get secureStorage => AppSecureStorage.instance;
   static final String multiUserRefKey = "MULTI_USER_STORAGE_REF_KEY";
-  static final String multiUserActiveUserIDRefKey = "MULTI_USER_ACTIVE_USER_ID_STORAGE_REF_KEY";
+  static final String multiUserActiveUserIDRefKey =
+      "MULTI_USER_ACTIVE_USER_ID_STORAGE_REF_KEY";
 
   MultiUserAccount({
     this.userModels,
@@ -70,10 +79,13 @@ class MultiUserAccount {
   final String? activeSignedInUserID;
 
   AuthUser? getModel(String userID) => userModels?[userID];
-  AuthUser? get currentSignedInModel => activeSignedInUserID != null ? (userModels?[activeSignedInUserID]) : null;
+  AuthUser? get currentSignedInModel =>
+      activeSignedInUserID != null ? (userModels?[activeSignedInUserID]) : null;
 
   static Future<String?> getStorageUserActiveID() async {
-    final result = await secureStorage.read(refKey: multiUserActiveUserIDRefKey);
+    final result = await secureStorage.read(
+      refKey: multiUserActiveUserIDRefKey,
+    );
 
     if (result != null) {
       return result;
@@ -84,7 +96,9 @@ class MultiUserAccount {
 
   static Future<Map<String, AuthUser>?> getStorageUserModel() async {
     Map<String, AuthUser>? resultModels;
-    final result = await secureStorage.readRefKeyValues(refKeyValue: multiUserRefKey);
+    final result = await secureStorage.readRefKeyValues(
+      refKeyValue: multiUserRefKey,
+    );
 
     if (result != null) {
       final models = result.entries.map((e) {
@@ -110,7 +124,10 @@ class MultiUserAccount {
 
   static Future<void> saveActiveUserID({required String? id}) async {
     // final now = DateTime.now().toIso8601String();
-    await secureStorage.writeWithCombinedKey(combinedKey: multiUserActiveUserIDRefKey, value: id);
+    await secureStorage.writeWithCombinedKey(
+      combinedKey: multiUserActiveUserIDRefKey,
+      value: id,
+    );
   }
 
   static Future<bool> saveStorageUserModel({
@@ -120,10 +137,16 @@ class MultiUserAccount {
     if (resultModels?.isNotEmpty ?? false) {
       await saveActiveUserID(id: activeUserID);
       resultModels?.forEach((key, value) async {
-        await secureStorage.writeUserValue(userID: key, ref: multiUserRefKey, value: value.toJson());
+        await secureStorage.writeUserValue(
+          userID: key,
+          ref: multiUserRefKey,
+          value: value.toJson(),
+        );
       });
     } else {
-      await secureStorage.deleteAllKeyPattern(pattern: multiUserActiveUserIDRefKey);
+      await secureStorage.deleteAllKeyPattern(
+        pattern: multiUserActiveUserIDRefKey,
+      );
       await secureStorage.deleteAllKeyPattern(pattern: multiUserRefKey);
     }
 
@@ -154,7 +177,10 @@ class MultiUserAccount {
     return saved;
   }
 
-  MultiUserAccount copyWith({Map<String, AuthUser>? userModels, String? activeSignedInUserID}) {
+  MultiUserAccount copyWith({
+    Map<String, AuthUser>? userModels,
+    String? activeSignedInUserID,
+  }) {
     return MultiUserAccount(
       userModels: userModels ?? this.userModels,
       activeSignedInUserID: activeSignedInUserID ?? this.activeSignedInUserID,
@@ -163,19 +189,23 @@ class MultiUserAccount {
     );
   }
 
-  Future<MultiUserAccount> switchAccountAndSaveAccountID({required String newCurrentSignedInUserID}) async {
+  Future<MultiUserAccount> switchAccountAndSaveAccountID({
+    required String newCurrentSignedInUserID,
+  }) async {
     await saveActiveUserID(id: newCurrentSignedInUserID);
     return copyWith(activeSignedInUserID: newCurrentSignedInUserID);
   }
 
   @override
-  String toString() => 'MultiUserAccount(userModels: $userModels, activeSignedInUserID: $activeSignedInUserID)';
+  String toString() =>
+      'MultiUserAccount(userModels: $userModels, activeSignedInUserID: $activeSignedInUserID)';
 
   @override
   bool operator ==(covariant MultiUserAccount other) {
     if (identical(this, other)) return true;
 
-    return mapEquals(other.userModels, userModels) && other.activeSignedInUserID == activeSignedInUserID;
+    return mapEquals(other.userModels, userModels) &&
+        other.activeSignedInUserID == activeSignedInUserID;
   }
 
   @override
