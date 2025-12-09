@@ -1,3 +1,4 @@
+import 'package:agradiance_flutter_drive/src/extensions/color_extension.dart';
 import 'package:flutter/material.dart';
 
 extension TextStyleExtensions on Text {
@@ -71,6 +72,18 @@ extension TextStyleExtensions on Text {
 
   Text size(double fontSize) => copyWith(style: (style ?? TextStyle()).copyWith(fontSize: fontSize));
 
+  Text outlined({Color? outlinedColor, double strokeWidth = 2, PaintingStyle paintingStyle = PaintingStyle.stroke}) {
+    return copyWith(
+      style: (style ?? TextStyle()).copyWith(
+        foreground: Paint()
+          ..style = paintingStyle
+          ..strokeWidth = strokeWidth
+          ..color = (outlinedColor ?? style?.color?.luminance ?? Colors.black), // Outline color
+      ),
+    );
+  }
+
+  Text sp(double fontSize) => size(fontSize);
   Text get sp0 => size(0);
   Text get sp1 => size(1);
   Text get sp2 => size(2);

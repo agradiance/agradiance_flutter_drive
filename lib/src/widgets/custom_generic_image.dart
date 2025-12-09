@@ -13,9 +13,6 @@ class CGImage<T> extends StatelessWidget {
   ///[imageSource] is required parameter for showing png,jpg,etc image
   final T? imageSource;
 
-  ///[svgPath] is required parameter for showing svg image
-  final String? svgPath;
-
   final double? height;
   final bool? showForeGDeco;
   final double? width;
@@ -39,7 +36,6 @@ class CGImage<T> extends StatelessWidget {
   const CGImage({
     super.key,
     this.imageSource,
-    this.svgPath,
     this.height,
     this.showForeGDeco,
     this.width,
@@ -98,13 +94,18 @@ class CGImage<T> extends StatelessWidget {
     if (imageSource?.toString().isEmpty ?? false) {
       return placeHolderWidget ?? Icon(Icons.broken_image_rounded);
     }
-    if (svgPath != null && svgPath!.isNotEmpty) {
+
+    final ext = imageSource is String ? imageSource?.toString().split(".").lastOrNull : null;
+    final svgPath = ext != null && ext.isNotEmpty && ext.toLowerCase().trim() == "svg"
+        ? imageSource.toString().trim()
+        : null;
+    if (svgPath != null) {
       return SizedBox(
         height: height,
         width: width,
         child: SvgPicture.asset(
           colorFilter: color != null ? ColorFilter.mode(color!, BlendMode.srcIn) : null,
-          svgPath!,
+          svgPath,
           height: height,
           width: width,
           fit: fit ?? BoxFit.contain,

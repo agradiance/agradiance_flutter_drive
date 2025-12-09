@@ -171,7 +171,7 @@ class RestApiService {
     try {
       await veryfyUserAuthTokensExpirationCallBack?.call();
       final response = await request();
-      final message = response.data[responseMessageKey ?? this._responseMessageKey];
+      final message = response.data[responseMessageKey ?? _responseMessageKey];
 
       // dprint(response.data["data"]);
 
@@ -179,7 +179,7 @@ class RestApiService {
           ? {
               "message": message,
               "data": EncryptUtils.instance.decryptFrom64ToType(
-                data: response.data[responseDataKey ?? this._responseDataKey],
+                data: response.data[responseDataKey ?? _responseDataKey],
               ),
               // "data": EncryptUtils.decryptFrom64ToType<Map<String, dynamic>>(data: response.data["data"]),
             }
@@ -208,8 +208,8 @@ class RestApiService {
   }) async {
     return _handleResponse(
       encryptedResponse: encryptedResponse,
-      responseDataKey: responseDataKey ?? this._responseDataKey,
-      responseMessageKey: responseMessageKey ?? this._responseMessageKey,
+      responseDataKey: responseDataKey ?? _responseDataKey,
+      responseMessageKey: responseMessageKey ?? _responseMessageKey,
       () => _client
           .fetch(requestOptions)
           .timeout(timeoutSeconds != null ? Duration(seconds: timeoutSeconds) : _connectTimeout),
@@ -274,8 +274,8 @@ class RestApiService {
   }) async {
     return _handleResponse(
       encryptedResponse: encryptedResponse,
-      responseDataKey: responseDataKey ?? this._responseDataKey,
-      responseMessageKey: responseMessageKey ?? this._responseMessageKey,
+      responseDataKey: responseDataKey ?? _responseDataKey,
+      responseMessageKey: responseMessageKey ?? _responseMessageKey,
       () => _client
           .get(
             url,
@@ -306,8 +306,8 @@ class RestApiService {
   }) async {
     return _handleResponse(
       encryptedResponse: encryptedResponse,
-      responseDataKey: responseDataKey ?? this._responseDataKey,
-      responseMessageKey: responseMessageKey ?? this._responseMessageKey,
+      responseDataKey: responseDataKey ?? _responseDataKey,
+      responseMessageKey: responseMessageKey ?? _responseMessageKey,
       () => _client
           .post(
             url,
@@ -340,8 +340,8 @@ class RestApiService {
   }) async {
     return _handleResponse(
       encryptedResponse: encryptedResponse,
-      responseDataKey: responseDataKey ?? this._responseDataKey,
-      responseMessageKey: responseMessageKey ?? this._responseMessageKey,
+      responseDataKey: responseDataKey ?? _responseDataKey,
+      responseMessageKey: responseMessageKey ?? _responseMessageKey,
       () => _client
           .put(
             url,
@@ -374,8 +374,8 @@ class RestApiService {
   }) async {
     return _handleResponse(
       encryptedResponse: encryptedResponse,
-      responseDataKey: responseDataKey ?? this._responseDataKey,
-      responseMessageKey: responseMessageKey ?? this._responseMessageKey,
+      responseDataKey: responseDataKey ?? _responseDataKey,
+      responseMessageKey: responseMessageKey ?? _responseMessageKey,
       () => _client
           .patch(
             url,
@@ -405,8 +405,8 @@ class RestApiService {
   }) async {
     return _handleResponse(
       encryptedResponse: encryptedResponse,
-      responseDataKey: responseDataKey ?? this._responseDataKey,
-      responseMessageKey: responseMessageKey ?? this._responseMessageKey,
+      responseDataKey: responseDataKey ?? _responseDataKey,
+      responseMessageKey: responseMessageKey ?? _responseMessageKey,
       () => _client
           .delete(
             url,
