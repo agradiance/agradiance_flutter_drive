@@ -10,6 +10,7 @@ class CustomStackPlaceholderWidget extends StatelessWidget {
     this.hideChild = false,
     this.enableChild = true,
     this.childOpacity = 1,
+    this.alignment = AlignmentDirectional.center,
   });
 
   final Widget? topWidget;
@@ -18,19 +19,20 @@ class CustomStackPlaceholderWidget extends StatelessWidget {
   final bool hideChild;
   final bool enableChild;
   final double childOpacity;
+  final AlignmentGeometry alignment;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
+      alignment: alignment,
       children: [
-        if (topWidget.isNotNull)
-          IgnorePointer(
-            ignoring: !enableChild,
-            child: Visibility(
-              visible: !hideChild,
-              child: Opacity(opacity: childOpacity, child: child),
-            ),
+        IgnorePointer(
+          ignoring: !enableChild,
+          child: Visibility(
+            visible: !hideChild,
+            child: Opacity(opacity: childOpacity, child: child),
           ),
+        ),
         if (topWidget.isNotNull) Visibility(visible: !hideTop, child: topWidget!),
       ],
     );

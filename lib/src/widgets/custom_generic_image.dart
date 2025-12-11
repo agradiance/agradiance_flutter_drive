@@ -30,6 +30,7 @@ class CGImage<T> extends StatelessWidget {
   final Uint8List? bytes;
   final bool keepLoading;
   final BoxShape boxShape;
+  final Decoration? decoration;
 
   ///a [CGImage] it can be used for showing any type of images
   /// it will shows the placeholder image if image is not found on network image
@@ -53,6 +54,7 @@ class CGImage<T> extends StatelessWidget {
     this.bytes,
     this.keepLoading = false,
     this.boxShape = BoxShape.rectangle,
+    this.decoration,
   });
 
   @override
@@ -67,17 +69,23 @@ class CGImage<T> extends StatelessWidget {
           width: width,
           height: height,
           padding: padding,
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(
-            shape: boxShape,
-            borderRadius: boxShape != BoxShape.rectangle ? null : borderRadius,
-            border: border,
-          ),
+          clipBehavior: decoration != null ? Clip.hardEdge : Clip.none,
+          decoration:
+              decoration ??
+              BoxDecoration(
+                shape: boxShape,
+                borderRadius: boxShape != BoxShape.rectangle
+                    ? null
+                    : borderRadius,
+                border: border,
+              ),
           child: InkWell(
             onTap: onTap,
             child: Builder(
               builder: (context) {
-                return alignment != null ? Align(alignment: alignment!, child: _buildWidget()) : _buildWidget();
+                return alignment != null
+                    ? Align(alignment: alignment!, child: _buildWidget())
+                    : _buildWidget();
               },
             ),
           ),
@@ -95,8 +103,11 @@ class CGImage<T> extends StatelessWidget {
       return placeHolderWidget ?? Icon(Icons.broken_image_rounded);
     }
 
-    final ext = imageSource is String ? imageSource?.toString().split(".").lastOrNull : null;
-    final svgPath = ext != null && ext.isNotEmpty && ext.toLowerCase().trim() == "svg"
+    final ext = imageSource is String
+        ? imageSource?.toString().split(".").lastOrNull
+        : null;
+    final svgPath =
+        ext != null && ext.isNotEmpty && ext.toLowerCase().trim() == "svg"
         ? imageSource.toString().trim()
         : null;
     if (svgPath != null) {
@@ -104,7 +115,9 @@ class CGImage<T> extends StatelessWidget {
         height: height,
         width: width,
         child: SvgPicture.asset(
-          colorFilter: color != null ? ColorFilter.mode(color!, BlendMode.srcIn) : null,
+          colorFilter: color != null
+              ? ColorFilter.mode(color!, BlendMode.srcIn)
+              : null,
           svgPath,
           height: height,
           width: width,
@@ -125,7 +138,9 @@ class CGImage<T> extends StatelessWidget {
           return placeHolderWidget ?? Icon(Icons.broken_image_rounded);
         },
       );
-    } else if (imageSource != null && imageSource is String && (imageSource as String).startsWith('assets/')) {
+    } else if (imageSource != null &&
+        imageSource is String &&
+        (imageSource as String).startsWith('assets/')) {
       return Image.asset(
         imageSource as String,
         height: height,
@@ -163,11 +178,19 @@ class CGImage<T> extends StatelessWidget {
               fit: fit,
               imageUrl: imageSource.toString(),
               color: color,
-              placeholder: (context, url) => CustomShimmers(height: height, width: width, borderRadius: borderRadius),
+              placeholder: (context, url) => CustomShimmers(
+                height: height,
+                width: width,
+                borderRadius: borderRadius,
+              ),
               errorWidget: (context, url, error) => SizedBox(
                 height: height,
                 width: width,
-                child: placeHolderWidget ?? Icon(!isProfile! ? Icons.broken_image_rounded : Icons.person),
+                child:
+                    placeHolderWidget ??
+                    Icon(
+                      !isProfile! ? Icons.broken_image_rounded : Icons.person,
+                    ),
               ),
             )
           : kIsWeb || kIsWasm
@@ -184,13 +207,27 @@ class CGImage<T> extends StatelessWidget {
             );
     }
     return keepLoading
-        ? CustomShimmers(height: height, width: width, borderRadius: borderRadius)
-        : SizedBox(height: height, width: width, child: placeHolderWidget ?? Icon(Icons.image));
+        ? CustomShimmers(
+            height: height,
+            width: width,
+            borderRadius: borderRadius,
+          )
+        : SizedBox(
+            height: height,
+            width: width,
+            child: placeHolderWidget ?? Icon(Icons.image),
+          );
   }
 }
 
 class CustomShimmers extends StatelessWidget {
-  const CustomShimmers({super.key, this.width, this.height, this.borderRadius, this.enabled = true});
+  const CustomShimmers({
+    super.key,
+    this.width,
+    this.height,
+    this.borderRadius,
+    this.enabled = true,
+  });
 
   final double? height, width;
   final bool enabled;
@@ -206,7 +243,10 @@ class CustomShimmers extends StatelessWidget {
         height: height,
         width: width,
         padding: const EdgeInsets.all(2),
-        decoration: BoxDecoration(color: Colors.black.withAlpha((255 * 0.4).toInt()), borderRadius: borderRadius),
+        decoration: BoxDecoration(
+          color: Colors.black.withAlpha((255 * 0.4).toInt()),
+          borderRadius: borderRadius,
+        ),
       ),
     );
   }
