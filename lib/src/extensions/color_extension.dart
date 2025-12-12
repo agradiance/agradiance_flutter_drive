@@ -25,4 +25,22 @@ extension ColorExtension on Color {
 
     return Color(int.parse(hex, radix: 16));
   }
+
+  int get alphaRounded => (a * 255.0).round().clamp(0, 255);
+  int get redRounded => (r * 255.0).round().clamp(0, 255);
+  int get greenRounded => (g * 255.0).round().clamp(0, 255);
+  int get blueRounded => (b * 255.0).round().clamp(0, 255);
+
+  String toHexString({bool includeAlpha = false}) {
+    final String alpha = alphaRounded.toRadixString(16).padLeft(2, '0').toUpperCase();
+    final String red = redRounded.toRadixString(16).padLeft(2, '0').toUpperCase();
+    final String green = greenRounded.toRadixString(16).padLeft(2, '0').toUpperCase();
+    final String blue = blueRounded.toRadixString(16).padLeft(2, '0').toUpperCase();
+
+    if (includeAlpha) {
+      return '$alpha$red$green$blue';
+    } else {
+      return '$red$green$blue';
+    }
+  }
 }
