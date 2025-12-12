@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' show Color, Colors;
 
+//
 extension ColorExtension on Color {
   Color get luminance {
     final luminance = computeLuminance();
